@@ -39,7 +39,7 @@
   }
 }
 
-[class~='ant-col'] {
+/* [class~='ant-col'] {
   background: transparent;
   border: 0;
 }
@@ -48,4 +48,4 @@
   height: 120px;
   line-height: 120px;
   font-size: 13px;
-}
+} */
