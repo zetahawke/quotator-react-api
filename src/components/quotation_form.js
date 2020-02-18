@@ -32,7 +32,6 @@ class QuotationForm extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.target);
-    console.log(data);
     const obj = {};
     for (const [key, value] of data.entries()) {
       obj[key] = value;
@@ -73,17 +72,12 @@ class QuotationForm extends React.Component {
       algorithm_days: ""
     }
 
-    const headers = new Headers({
-      'Content-Type': 'application/json'
-    });
-
-    console.log(fetchParams)
-    debugger;
-
     fetch('http://localhost:3023/api/quotations', {
       method: 'POST',
-      body: fetchParams,
-      headers: headers
+      body: JSON.stringify(fetchParams),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     })
       .then(res => res.json())
       .then((data) => {
