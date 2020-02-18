@@ -1,6 +1,13 @@
 import React from 'react';
 // import { Button, Form, Input } from 'antd';
 import Communes from './communes';
+import Prices from './prices';
+
+const pricesTableProps = {
+  scroll: { x: 490 },
+  size: 'small',
+  showHeader: true
+}
 
 class QuotationForm extends React.Component {
   constructor() {
@@ -11,7 +18,7 @@ class QuotationForm extends React.Component {
   state = {
     communes: [],
     couriers: [],
-    results: []
+    results: {}
   }
 
   componentDidMount() {
@@ -89,27 +96,33 @@ class QuotationForm extends React.Component {
 
   render() {
     return (
-      <form layout={'inline'} onSubmit={this.handleSubmit}>
-        <label>{'Communes:'}</label>
-        <Communes communes={this.state.communes} />
+      <div>
+        <form layout={'inline'} onSubmit={this.handleSubmit}>
+          <label>{'Communes:'}</label>
+          <Communes communes={this.state.communes} />
 
-        <label>{'Height:'}</label>
-        <input name={'height'} type={'text'} placeholder={'30'} />
+          <label>{'Height:'}</label>
+          <input name={'height'} type={'text'} placeholder={'30'} />
 
-        <label>{'Width:'}</label>
-        <input name={'width'} type={'text'} placeholder={'30'} />
+          <label>{'Width:'}</label>
+          <input name={'width'} type={'text'} placeholder={'30'} />
 
-        <label>{'Length:'}</label>
-        <input name={'length'} type={'text'} placeholder={'30'} />
+          <label>{'Length:'}</label>
+          <input name={'length'} type={'text'} placeholder={'30'} />
 
-        <label>{'Weight:'}</label>
-        <input name={'weight'} type={'text'} placeholder={'1'} />
+          <label>{'Weight:'}</label>
+          <input name={'weight'} type={'text'} placeholder={'1'} />
 
-        <button type="submit">
-          Quotate
-        </button>
+          <button type="submit">
+            Quotate
+          </button>
+        </form>
 
-      </form>
+        {this.props.results !== undefined ? (
+          <Prices data={this.props.results.prices} pricesTableProps={pricesTableProps} />
+        ) : null}
+      </div>
+
     );
   }
 };
