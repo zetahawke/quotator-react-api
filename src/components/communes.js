@@ -5,12 +5,12 @@ const { Option } = Select;
 const Communes = ({ communes }) => {
   return (
     <div>
-      <Select style={{ width: 120 }}>
-        <Option key='select' value="">Select a commune</Option>
+      <select id={'communeId'} name={'communeId'} style={{ width: 120 }}>
+        <option key='select' value="">Select a commune</option>
         {communes.map((commune) => (
-          <Option key={commune.id} value={commune.id}>{commune.name}</Option>
+          <option key={commune.id} value={commune.id + '-' + commune.name}>{commune.name}</option>
         ))}
-      </Select>
+      </select>
     </div>
   )
 };
