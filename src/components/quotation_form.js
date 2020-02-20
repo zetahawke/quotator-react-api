@@ -2,16 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Communes from './communes';
 import Prices from './prices';
 
-const pricesTableProps = {
-  scroll: { x: 490 },
-  size: 'small',
-  showHeader: true
-}
-
 const QuotationForm = props => {
-  const communes = props.communes;
-  const couriers = props.couriers;
-  const [quotationResults, setQuotationResults] = useState([]);
+  const [quotationResults, setQuotationResults] = useState({});
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -25,14 +17,14 @@ const QuotationForm = props => {
     const communeName = obj.communeId.split('-')[1];
     const origins = () => {
       let posibleOrigins = {};
-      couriers.forEach(courier => {
+      props.couriers.forEach(courier => {
         posibleOrigins[courier.name.toLowerCase()] = 'LAS CONDES';
       });
       return posibleOrigins;
     };
     const destinies = () => {
       let posibleDestinies = {};
-      couriers.forEach(courier => {
+      props.couriers.forEach(courier => {
         posibleDestinies[courier.name.toLowerCase()] = communeName;
       });
       return posibleDestinies;
@@ -70,24 +62,20 @@ const QuotationForm = props => {
       .then(res => res.json())
       .then((data) => {
         setQuotationResults(data)
-        console.log(data);
       })
       .catch(console.log);
   };
 
   useEffect(() => {
-    // console.log(communes);
   }, [
     quotationResults
-    // communes,
-    // couriers
   ]);
 
   return (
     <div>
       <form layout={'inline'} onSubmit={handleSubmit}>
         <label>{'Communes:'}</label>
-        <Communes communes={communes} />
+        <Communes communes={props.communes} />
 
         <label>{'Height:'}</label>
         <input name={'height'} type={'text'} placeholder={'30'} />
@@ -107,7 +95,7 @@ const QuotationForm = props => {
       </form>
 
       {quotationResults ? (
-        <Prices data={quotationResults.prices} pricesTableProps={pricesTableProps} />
+        <Prices data={quotationResults} />
       ) : null}
     </div>
 

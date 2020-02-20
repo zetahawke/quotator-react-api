@@ -1,9 +1,6 @@
 import React from 'react';
-import { Select } from 'antd';
-const { Option } = Select;
 
 const Communes = ({ communes }) => {
-  console.log(communes);
   return (
     <div>
       <select id={'communeId'} name={'communeId'} style={{ width: 120 }}>

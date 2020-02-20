@@ -1,11 +1,4 @@
 import React from 'react';
-// import { Button, Form, Input } from 'antd';
-
-const pricesTableProps = {
-  scroll: { x: 490 },
-  size: 'small',
-  showHeader: true
-}
 
 class QuotationFormContainer extends React.PureComponent {
 

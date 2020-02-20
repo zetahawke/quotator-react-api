@@ -4,26 +4,32 @@ import { Table, Row, Col, Card } from 'antd';
 
 const { Column } = Table;
 
-const Prices = ({ data, pricesTableProps }) => {
+const pricesTableProps = {
+  scroll: { x: 490 },
+  size: 'small',
+  showHeader: true
+}
+
+
+const Prices = ({ data }) => {
+  console.log(data);
   return (
     <Row gutter={24}>
       <Col>
         <Card title={'El precio que más se ajusta'}>
           <Row gutter={24}>
-            <Table {...pricesTableProps} data={data}>
+            <Table {...pricesTableProps} dataSource={data.prices}>
               <Column
                 title='Courier'
-                key='courier'
                 dataIndex='courier'
                 render={
                   value => {
-                    return value.name
+                    return value ? value.name : value;
                   }
                 }
               />
               <Column
                 title='Dias'
-                key='days'
                 dataIndex='days'
                 render={
                   value => {
@@ -33,7 +39,6 @@ const Prices = ({ data, pricesTableProps }) => {
               />
               <Column
                 title='Precio'
-                key='price'
                 dataIndex='price'
                 render={
                   value => {
@@ -43,7 +48,6 @@ const Prices = ({ data, pricesTableProps }) => {
               />
               <Column
                 title='Costo'
-                key='cost'
                 dataIndex='cost'
                 render={
                   value => {
