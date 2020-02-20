@@ -9,122 +9,36 @@ const pricesTableProps = {
   showHeader: true
 }
 
-class QuotationForm extends React.Component {
-  constructor() {
-    super();
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+const QuotationForm = ({ communes, handleSubmit }) => {
+  return (
+    <div>
+      <form layout={'inline'} onSubmit={handleSubmit}>
+        <label>{'Communes:'}</label>
+        <Communes communes={communes} />
 
-  state = {
-    communes: [],
-    couriers: [],
-    results: {}
-  }
+        <label>{'Height:'}</label>
+        <input name={'height'} type={'text'} placeholder={'30'} />
 
-  componentDidMount() {
-    fetch('http://localhost:5000/api/communes')
-      .then(res => res.json())
-      .then((data) => {
-        this.setState({ communes: data })
-      })
-      .catch(console.log);
-    fetch('http://localhost:3023/api/couriers')
-      .then(res => res.json())
-      .then((data) => {
-        this.setState({ couriers: data.couriers })
-      })
-      .catch(console.log);
-  }
+        <label>{'Width:'}</label>
+        <input name={'width'} type={'text'} placeholder={'30'} />
 
-  handleSubmit(event) {
-    event.preventDefault();
-    const data = new FormData(event.target);
-    const obj = {};
-    for (const [key, value] of data.entries()) {
-      obj[key] = value;
-    };
+        <label>{'Length:'}</label>
+        <input name={'length'} type={'text'} placeholder={'30'} />
 
-    const communeId = obj.communeId.split('-')[0];
-    const communeName = obj.communeId.split('-')[1];
-    const origins = () => {
-      let posibleOrigins = {};
-      this.state.couriers.forEach(courier => {
-        posibleOrigins[courier.name.toLowerCase()] = 'LAS CONDES';
-      });
-      return posibleOrigins;
-    };
-    const destinies = () => {
-      let posibleDestinies = {};
-      this.state.couriers.forEach(courier => {
-        posibleDestinies[courier.name.toLowerCase()] = communeName;
-      });
-      return posibleDestinies;
-    };
+        <label>{'Weight:'}</label>
+        <input name={'weight'} type={'text'} placeholder={'1'} />
 
+        <button type="submit">
+          Quotate
+        </button>
+      </form>
 
-    const fetchParams = {
-      couriers_availables_from: origins(),
-      couriers_availables_to: destinies(),
-      height: obj.height,
-      length: obj.length,
-      width: obj.width,
-      weight: obj.weight,
-      is_payable: false,
-      destiny: 'domicilio',
-      courier_branch_office_id: null,
-      courier_for_client: null,
-      courier_selected: false,
-      commune_id: communeId,
-      algorithm: 1,
-      algorithm_days: ""
-    }
+      {this.props.results !== undefined ? (
+        <Prices data={this.props.results.prices} pricesTableProps={pricesTableProps} />
+      ) : null}
+    </div>
 
-    fetch('http://localhost:3023/api/quotations', {
-      method: 'POST',
-      body: JSON.stringify(fetchParams),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(res => res.json())
-      .then((data) => {
-        this.setState({ results: data })
-        console.log(data);
-      })
-      .catch(console.log);
-  };
-
-  render() {
-    return (
-      <div>
-        <form layout={'inline'} onSubmit={this.handleSubmit}>
-          <label>{'Communes:'}</label>
-          <Communes communes={this.state.communes} />
-
-          <label>{'Height:'}</label>
-          <input name={'height'} type={'text'} placeholder={'30'} />
-
-          <label>{'Width:'}</label>
-          <input name={'width'} type={'text'} placeholder={'30'} />
-
-          <label>{'Length:'}</label>
-          <input name={'length'} type={'text'} placeholder={'30'} />
-
-          <label>{'Weight:'}</label>
-          <input name={'weight'} type={'text'} placeholder={'1'} />
-
-          <button type="submit">
-            Quotate
-          </button>
-        </form>
-
-        {this.props.results !== undefined ? (
-          <Prices data={this.props.results.prices} pricesTableProps={pricesTableProps} />
-        ) : null}
-      </div>
-
-    );
-  }
+  );
 };
 
 export default QuotationForm
