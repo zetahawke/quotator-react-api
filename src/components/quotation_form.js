@@ -1,5 +1,4 @@
-import React from 'react';
-// import { Button, Form, Input } from 'antd';
+import React, { useEffect, useState } from 'react';
 import Communes from './communes';
 import Prices from './prices';
 
@@ -9,7 +8,81 @@ const pricesTableProps = {
   showHeader: true
 }
 
-const QuotationForm = ({ communes, handleSubmit }) => {
+const QuotationForm = props => {
+  const communes = props.communes;
+  const couriers = props.couriers;
+  const [quotationResults, setQuotationResults] = useState([]);
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    const obj = {};
+    for (const [key, value] of data.entries()) {
+      obj[key] = value;
+    };
+
+    const communeId = obj.communeId.split('-')[0];
+    const communeName = obj.communeId.split('-')[1];
+    const origins = () => {
+      let posibleOrigins = {};
+      couriers.forEach(courier => {
+        posibleOrigins[courier.name.toLowerCase()] = 'LAS CONDES';
+      });
+      return posibleOrigins;
+    };
+    const destinies = () => {
+      let posibleDestinies = {};
+      couriers.forEach(courier => {
+        posibleDestinies[courier.name.toLowerCase()] = communeName;
+      });
+      return posibleDestinies;
+    };
+
+
+    const fetchParams = {
+      couriers_availables_from: origins(),
+      couriers_availables_to: destinies(),
+      height: obj.height,
+      length: obj.length,
+      width: obj.width,
+      weight: obj.weight,
+      is_payable: false,
+      destiny: 'domicilio',
+      courier_branch_office_id: null,
+      courier_for_client: null,
+      courier_selected: false,
+      commune_id: communeId,
+      algorithm: 1,
+      algorithm_days: ""
+    }
+
+    fetchQuotationResults(fetchParams);
+  };
+
+  const fetchQuotationResults = async (fetchParams) => {
+    fetch('http://localhost:3023/api/quotations', {
+      method: 'POST',
+      body: JSON.stringify(fetchParams),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then((data) => {
+        setQuotationResults(data)
+        console.log(data);
+      })
+      .catch(console.log);
+  };
+
+  useEffect(() => {
+    // console.log(communes);
+  }, [
+    quotationResults
+    // communes,
+    // couriers
+  ]);
+
   return (
     <div>
       <form layout={'inline'} onSubmit={handleSubmit}>
@@ -33,8 +106,8 @@ const QuotationForm = ({ communes, handleSubmit }) => {
         </button>
       </form>
 
-      {this.props.results !== undefined ? (
-        <Prices data={this.props.results.prices} pricesTableProps={pricesTableProps} />
+      {quotationResults ? (
+        <Prices data={quotationResults.prices} pricesTableProps={pricesTableProps} />
       ) : null}
     </div>
 
